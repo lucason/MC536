@@ -1,0 +1,94 @@
+-- Entities --
+CREATE TABLE COMPANY
+       (Id		INT NOT NULL,
+	    	CName		VARCHAR(50) NOT NULL,
+        Website		VARCHAR(100),
+	    	Sector		VARCHAR(50),
+        Industry	VARCHAR(50), -- ?
+        NumberOfRatings	INT NOT NULL DEFAULT 0,
+		    Logo		VARCHAR(150),
+        OverallRating		FLOAT NOT NULL DEFAULT 0,
+        CultureAndValues	FLOAT NOT NULL DEFAULT 0,
+		    SeniorLeadership	FLOAT NOT NULL DEFAULT 0,
+  		  CompensationAndBenefits	FLOAT NOT NULL DEFAULT 0,
+  		  CareerOpportunities	FLOAT NOT NULL DEFAULT 0,
+  		  WorkLifeBalance		FLOAT NOT NULL DEFAULT 0,
+  		  RecomendToFriend	FLOAT NOT NULL DEFAULT 0, -- ?
+  		  CEOAproval		FLOAT NOT NULL DEFAULT 0,
+  		  PRIMARY KEY (Id));
+
+
+CREATE TABLE OFFER
+       ( Id		INT NOT NULL,
+        CompanyId INT NOT NULL,
+		    Title		VARCHAR(100) NOT NULL,
+       	Description	VARCHAR(200) NOT NULL,
+        Location VARCHAR(100) NOT NULL,
+    		Url		VARCHAR(200) NOT NULL,
+    		PubDate		DATETIME NOT NULL,
+    		Updated		DATETIME NOT NULL,
+    		PRIMARY KEY (Id),
+        UNIQUE (Url),
+		    FOREIGN KEY (CompanyId) 
+			    REFERENCES COMPANY(Id)
+				    ON DELETE NO ACTION
+				    ON UPDATE NO ACTION);
+
+
+CREATE TABLE SKILL
+       (SName		VARCHAR(50) NOT NULL,
+        Description	VARCHAR(100),
+		    PRIMARY KEY (SName));
+
+CREATE TABLE PERSON
+	( Id INT NOT NULL,
+	  Name VARCHAR(100) NOT NULL,
+    Born_Date DATETIME NOT NULL,
+    Email VARCHAR(100),
+    PRIMARY KEY(Id));
+      
+
+-- Relationships --
+
+-- Offer demands a Skill
+CREATE TABLE DEMANDS
+       ( Offer_id INT NOT NULL,
+		     Skill_name VARCHAR(50) NOT NULL,
+         PRIMARY KEY (Offer_id, Skill_name),
+		     FOREIGN KEY (Offer_id) 
+			    REFERENCES OFFER(Id)
+            ON DELETE NO ACTION
+			      ON UPDATE NO ACTION,
+         FOREIGN KEY (Skill_name) 
+			    REFERENCES SKILL(SName)
+			      ON DELETE NO ACTION
+			      ON UPDATE NO ACTION);
+             
+CREATE TABLE PERSON_SKILL
+	( Person_id INT NOT NULL,
+	  Skill_name VARCHAR(50) NOT NULL,
+    PRIMARY KEY(Person_id, Skill_name),
+    FOREIGN KEY (Person_id) 
+			REFERENCES PERSON(Id)
+       ON DELETE NO ACTION
+			 ON UPDATE NO ACTION,
+    FOREIGN KEY (Skill_name) 
+			REFERENCES SKILL(SName)
+			 ON DELETE NO ACTION
+			 ON UPDATE NO ACTION);
+
+CREATE TABLE RECOMENDS
+	( Offer_id INT NOT NULL,
+	  Skill_name VARCHAR(50) NOT NULL,
+    Recomendation_date DATETIME NOT NULL,
+    Relevance REAL NOT NULL,
+    PRIMARY KEY(Offer_id, Skill_name),
+	  FOREIGN KEY (Offer_id) 
+		  REFERENCES OFFER(Id)
+		  	ON DELETE NO ACTION
+		  	ON UPDATE NO ACTION,
+    FOREIGN KEY (Skill_name) 
+		  REFERENCES SKILL(SName)
+			  ON DELETE NO ACTION
+			  ON UPDATE NO ACTION);
+            
